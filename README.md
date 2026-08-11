@@ -3,9 +3,9 @@
 В этом репозитории собраны все необходимые материалы для успешного прогона тестов в Jenkins.
 
 **Содержимое репозитория**:
-Example_collection.postman_collection.json - коллекция запросов для Postman
-test.postman_environment.json - файл окружения (Environment) для Postman
-code.py - скрипт для запуска коллекции
+* Example_collection.postman_collection.json - коллекция запросов для Postman
+* test.postman_environment.json - файл окружения (Environment) для Postman
+* code.py - скрипт для запуска коллекции
 * env.email - файл с шаблоном переменных для почты
 * env.paths - файл с шаблоном переменных для путей
 
