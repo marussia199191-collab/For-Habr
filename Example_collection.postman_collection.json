@@ -1,0 +1,916 @@
+{
+  "info": {
+    "_postman_id": "b3b2f93f-1ae0-4b26-a760-6626b23ca693",
+    "name": "Example_collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39112871"
+  },
+  "item": [
+    {
+      "name": "Список пользователей",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Создание пользователя",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Генерим случайное число или метку времени\r",
+              "const randomSuffix = Math.floor(Math.random() * 1000000);\r",
+              "// Формируем email\r",
+              "const randomEmail = `user${randomSuffix}@example.com`;\r",
+              "\r",
+              "// Сохраняем в переменную окружения (или collection)\r",
+              "pm.collectionVariables.set('randomEmail', randomEmail);\r",
+              "\r",
+              "// Для отладки: выводим в консоль\r",
+              "console.log('Generated email:', randomEmail);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Парсим JSON-ответ\r",
+              "const userData = pm.response.json();\r",
+              "\r",
+              "// 2. Сохраняем значение id в переменную коллекции UserID\r",
+              "pm.collectionVariables.set(\"UserID\", userData.id);\r",
+              "\r",
+              "// 3. Для подстраховки — проверим, что переменная записалась правильно\r",
+              "pm.test(\"UserID сохранён в коллекции\", function () {\r",
+              "    pm.expect(pm.collectionVariables.get(\"UserID\")).to.eql(userData.id);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"firstName\": \"Marusia\",\r\n\"lastName\": \"Nikolaeva\",\r\n\"email\": \"{{randomEmail}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user/create",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user",
+            "create"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Редактирование пользователя",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"firstName\": \"Kotik\",\r\n\"lastName\": \"Shurik\",\r\n\"phone\": \"89650630529\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user/{{UserID}}",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user",
+            "{{UserID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Пользователь по ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user/{{UserID}}",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user",
+            "{{UserID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cоздание поста",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Парсим JSON-ответ\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "// 2. Сохраняем значение id в переменную коллекции PostID\r",
+              "pm.collectionVariables.set(\"PostID\", response.id);\r",
+              "\r",
+              "// 3. Проверяем, что всё сохранилось как надо\r",
+              "pm.test(\"PostID сохранён в коллекции\", () => {\r",
+              "    pm.expect(pm.collectionVariables.get(\"PostID\")).to.eql(response.id);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"text\": \"hello, my friends\",\r\n\"image\":\"https://randomuser.me/api/portraits/med/men/25.jpg\",\r\n\"likes\": 5,\r\n\"tags\": \"qa\",\r\n\"owner\": \"{{UserID}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/post/create",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "post",
+            "create"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Пост по ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/post/{{PostID}}",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "post",
+            "{{PostID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Пост по ID пользователя",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user/{{UserID}}/post",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user",
+            "{{UserID}}",
+            "post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Список постов",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/post",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Создание комментария",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Считываем JSON-ответ\r",
+              "const commentData = pm.response.json();\r",
+              "// 2. Сохраняем значение id в переменную коллекции CommentID\r",
+              "pm.collectionVariables.set(\"CommentID\", commentData.id);\r",
+              "\r",
+              "// 3. Проверяем, что переменная действительно сохранилась\r",
+              "pm.test(\"CommentID сохранён в коллекции\", () => {\r",
+              "    pm.expect(pm.collectionVariables.get(\"CommentID\")).to.eql(commentData.id);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"message\": \"this is interesting\",\r\n\"owner\": \"{{UserID}}\",\r\n\"post\": \"{{PostID}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/comment/create",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "comment",
+            "create"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Комментарий по ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user/{{UserID}}/comment",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user",
+            "{{UserID}}",
+            "comment"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Удаление комментария",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/comment/{{CommentID}}",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "comment",
+            "{{CommentID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Комментарий по ID (проверка удаления)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Код ответа 404\", function () {\r",
+              "    var responseCode = pm.response.code;\r",
+              "\r",
+              "    if (responseCode === 200) {\r",
+              "       pm.expect.fail(`Тест провален, код ответа: ${responseCode}`);\r",
+              "       console.log(\"Тест провален. Код ответа 200\"); // Проверка на 200\r",
+              "    } else if (responseCode === 404) {\r",
+              "        console.log(\"Тест пройден. Вы ввели некорректный запрос.\");\r",
+              "        // Здесь мы не вызываем pm.expect, чтобы не выводить \"PASSED\"\r",
+              "    } else {\r",
+              "        console.log(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/comment/user/{{CommentID}}/comment",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "comment",
+            "user",
+            "{{CommentID}}",
+            "comment"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Удаление пользователя",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Тест на код ответа 200\", function () {\r",
+              "    // 1. Читаем код ответа\r",
+              "    const responseCode = pm.response.code;\r",
+              "    \r",
+              "    // 2. Проверяем и логируем\r",
+              "    if (responseCode === 200) {\r",
+              "        console.log(`✅ Тест пройден, код ответа: ${responseCode}`);\r",
+              "        // Ни одной ошибки не кидаем – pm.test пометит тест как passed\r",
+              "    } else {\r",
+              "        console.log(`❌ Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        // Здесь явно фейлим тест с нужным текстом\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user/{{UserID}}",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user",
+            "{{UserID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Пользователь по ID (проверка удаления)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Код ответа 404\", function () {\r",
+              "    var responseCode = pm.response.code;\r",
+              "\r",
+              "    if (responseCode === 200) {\r",
+              "       pm.expect.fail(`Тест провален, код ответа: ${responseCode}`);\r",
+              "       console.log(\"Тест провален. Код ответа 200\"); // Проверка на 200\r",
+              "    } else if (responseCode === 404) {\r",
+              "        console.log(\"Тест пройден. Вы ввели некорректный запрос.\");\r",
+              "        // Здесь мы не вызываем pm.expect, чтобы не выводить \"PASSED\"\r",
+              "    } else {\r",
+              "        console.log(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "        pm.expect.fail(`Получен неожиданный код ответа: ${responseCode}`);\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://dummyapi.io/data/v1/user/{{UserID}}",
+          "protocol": "https",
+          "host": [
+            "dummyapi",
+            "io"
+          ],
+          "path": [
+            "data",
+            "v1",
+            "user",
+            "{{UserID}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "62e6f10d11c051e2d93a6723",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "app-id",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "UserID",
+      "value": ""
+    },
+    {
+      "key": "PostID",
+      "value": ""
+    },
+    {
+      "key": "CommentID",
+      "value": ""
+    },
+    {
+      "key": "randomEmail",
+      "value": ""
+    }
+  ]
+}
